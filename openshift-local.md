@@ -1,10 +1,7 @@
-# Local OpenShift on macos
+# OpenShift Local (formerly Code Ready Containers)
+On Apple MacPro Silicon M1 `aarch64` chip architecture
 
-Apple MacPro Silicon M1 `aarch64` chip architecture
-
-## OpenShift Local (formerly Code Ready Containers)
-
-### Install
+## Install
 - Download installer and pull secret from [Dowload page](https://console.redhat.com/openshift/create/local)
 - Run installer
 - Applications | Red Hat OpenShift Local > double-click, launches an installer
@@ -14,7 +11,7 @@ Apple MacPro Silicon M1 `aarch64` chip architecture
 - Run Setup
 
 
-### Start
+## Start
 Once installed
 - go to Terminal and `.crc` directory will be in your macos user folder e.g. `/Users/<username>`
 - `crc start` which takes about four minutes to start up the cluster instance
@@ -43,7 +40,7 @@ Use the 'oc' command line interface:
   $ oc login -u developer https://api.crc.testing:6443
 ```
 
-### Access 
+## Access 
 Access the web console
 ```
 crc console
@@ -54,7 +51,7 @@ Log in as the developer user with the password printed in the output of the crc 
 crc console --credentials
 ```
 
-### OpenShift CLI
+## OpenShift CLI
 Log into command line as developer
 ```
 eval $(crc oc-env)
@@ -69,3 +66,24 @@ You don't have any projects. You can try to create a new project, by running
     oc new-project <projectname>
 ```
 
+## Configure Registry Access in OpenShift Local
+Go to the console as kubeadmin and configure the OpenShift Local cluster to accept images from external registries.
+
+Go to Overview | Details | View Settings | Configuration | edit `Image' YAML
+```
+spec:
+  additionalTrustedCA:
+    name: registry-certs
+  allowedRegistriesForImport:
+    - domainName: quay.io
+      insecure: false
+  registrySources:
+    allowedRegistries:
+      - quay.io
+      - registry.redhat.io
+      - 'image-registry.openshift-image-registry.svc:5000'
+status:
+  externalRegistryHostnames:
+    - default-route-openshift-image-registry.apps-crc.testing
+  internalRegistryHostname: 'image-registry.openshift-image-registry.svc:5000'
+```
